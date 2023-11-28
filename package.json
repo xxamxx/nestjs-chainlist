@@ -1,6 +1,6 @@
 {
   "name": "nestjs-chainlist",
-  "version": "1.0.0-beta",
+  "version": "1.0.0-beta.1",
   "description": "Chainlist module for Nest framework (node.js)",
   "main": "dist/index.js",
   "repository": "https://github.com/xxamxx/nestjs-chainlist.git",
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@nestjs/common": "^10.2.10",
-    "evm-chainlist": "^1.0.0-beta",
+    "evm-chainlist": "^1.0.0-beta.1",
     "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {

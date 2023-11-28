@@ -1,6 +1,6 @@
 import { ChainList } from 'evm-chainlist';
 import { ConfigurableModuleBuilder, Provider } from '@nestjs/common';
-import { ChainsService, getChainsToken, getGlobalChainsToken } from '.';
+import { ChainsService, getChainListToken, getGlobalChainListToken } from '.';
 import { ChainsOptions } from './common';
 import { CHAINS_CONTEXT_LIST_METADATA, GLOBAL_CHAINS_CONTEXT_LIST_TARGET } from './constants';
 
@@ -18,13 +18,13 @@ export const { ConfigurableModuleClass, MODULE_OPTIONS_TOKEN } =
         const providers: Provider[] = [
           ...(definition.providers || []),
           {
-            provide: getGlobalChainsToken(),
+            provide: getGlobalChainListToken(),
             useValue: new ChainList()
           },
           ChainsService,
           ...names.map((name) => ({
-            provide: getChainsToken(name),
-            useFactory: (service: ChainsService) => service.getChains(name),
+            provide: getChainListToken(name),
+            useFactory: (service: ChainsService) => service.getChainList(name),
             inject: [ChainsService],
           })),
         ];

@@ -4,4 +4,4 @@ export const CHAINS_CONTEXT_LIST_METADATA = 'chains:name:list';
 
 export const GLOBAL_CHAINS_CONTEXT_LIST_TARGET = Object.seal({});
 
-export const S_GLOBAL_CHAINS = Symbol.for('@globalChains');
+export const S_GLOBAL_CHAIN_LIST = Symbol.for('@globalChainList');

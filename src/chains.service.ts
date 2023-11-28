@@ -1,28 +1,28 @@
-import { ChainList, buildChains } from 'evm-chainlist';
+import { Chain, ChainList, buildChains } from 'evm-chainlist';
 import { Inject, Injectable } from '@nestjs/common';
-import { getGlobalChainsToken } from './chains.decorator';
+import { getGlobalChainListToken } from './chains.decorator';
 import { MODULE_OPTIONS_TOKEN } from './chains.module-definition';
 import { ChainsOptions } from './common';
 
 @Injectable()
-export class ChainsService {
-  private groups: Map<string, ChainList> = new Map<string, ChainList>();
+export class ChainsService<T extends Chain = Chain> {
+  private groups = new Map<string, ChainList<T>>();
 
   constructor(
-    @Inject(getGlobalChainsToken()) private readonly globalChains: ChainList,
+    @Inject(getGlobalChainListToken()) private readonly globalChainList: ChainList<T>,
     @Inject(MODULE_OPTIONS_TOKEN) options?: ChainsOptions,
   ) {
     if (!options) return this;
     
-    const {data, groups, ...opts} = options;
-    const chains = buildChains(data, opts);
-    chains.forEach(chain => this.globalChains.add(chain));
+    const {data, groups, builder, ...opts} = options;
+    const chains = builder ? builder<T>(data, opts) : buildChains(data, opts) as T[];
+    chains.forEach(chain => this.globalChainList.add(chain));
 
     if (groups) {
       Object.keys(groups).forEach(key => {
         if (!Array.isArray(groups[key]) || !groups[key]?.length) return;
 
-        this.createChains(key, groups[key]);
+        this.createChainList(key, groups[key]);
       });
     }
   }
@@ -34,9 +34,9 @@ export class ChainsService {
    * @param {number[]} chainIds - An array of chain IDs.
    * @return {ChainList} - The created ChainList object.
    */
-  createChains(name, chainIds: number[]): ChainList {
-    const chains = new ChainList();
-    chainIds.forEach(chainId => this.globalChains.get(chainId) && chains.add(this.globalChains.get(chainId)));
+  createChainList(name, chainIds: number[]): ChainList<T> {
+    const chains = new ChainList<T>();
+    chainIds.forEach(chainId => this.globalChainList.get(chainId) && chains.add(this.globalChainList.get(chainId)));
     this.groups.set(name, chains);
     return chains;
   }
@@ -47,7 +47,11 @@ export class ChainsService {
    * @param {string} name - The name of the chains to retrieve.
    * @return {ChainList | undefined} - The chains with the given name, or undefined if not found.
    */
-  getChains(name): ChainList | undefined {
+  getChainList(name): ChainList<T> | undefined {
     return this.groups.get(name);
+  }
+
+  getChain(value): T | undefined {
+    return this.globalChainList.get(value);
   }
 }
