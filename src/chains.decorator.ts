@@ -1,7 +1,7 @@
 import { Inject } from '@nestjs/common';
 import {
-  CHAINS_NAME_METADATA, 
   CHAINS_CONTEXT_LIST_METADATA,
+  CHAINS_NAME_METADATA,
   GLOBAL_CHAINS_CONTEXT_LIST_TARGET,
   S_GLOBAL_CHAIN_LIST,
 } from './constants';
@@ -27,7 +27,7 @@ export function getChainListToken(name) {
  * @param {string} name - the name parameter.
  * @return {Function} - the generated function comment.
  */
-export function ChainList(name) {
+export function Chains(name) {
   return (target: object, key: string | symbol, index?: number) => {
     Inject(getChainListToken(name))(target, key, index);
     const list =
