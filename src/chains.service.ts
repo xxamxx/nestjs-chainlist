@@ -5,7 +5,7 @@ import { MODULE_OPTIONS_TOKEN } from './chains.module-definition';
 import { ChainsOptions } from './common';
 
 @Injectable()
-export class ChainsService<T extends Chain = Chain> extends Chains {
+export class ChainsService<T extends Chain = Chain> extends Chains<T> {
   @Inject(getGlobalChainListToken()) protected readonly globalChainList: ChainList<T>;
 
   constructor(
