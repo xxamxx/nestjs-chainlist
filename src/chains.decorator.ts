@@ -1,13 +1,11 @@
 import { Inject } from '@nestjs/common';
 import {
   CHAINS_CONTEXT_LIST_METADATA,
-  CHAINS_NAME_METADATA,
-  GLOBAL_CHAINS_CONTEXT_LIST_TARGET,
-  S_GLOBAL_CHAIN_LIST,
+  GLOBAL_CHAINS_CONTEXT_LIST_TARGET
 } from './constants';
 
-export function getGlobalChainListToken() {
-  return S_GLOBAL_CHAIN_LIST;
+export function getChainsStorageToken() {
+  return 'chains:storage';
 }
 
 /**
@@ -17,7 +15,7 @@ export function getGlobalChainListToken() {
  * @return {string} - The generated token.
  */
 export function getChainListToken(name) {
-  return `${CHAINS_NAME_METADATA}#${String(name)}`;
+  return `chains:list#${String(name)}`;
 }
 
 
