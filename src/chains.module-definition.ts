@@ -1,5 +1,5 @@
-import { ChainList } from 'evm-chainlist';
 import { ConfigurableModuleBuilder, Provider } from '@nestjs/common';
+import { ChainList } from 'evm-chainlist';
 import { ChainsService, getChainListToken, getGlobalChainListToken } from '.';
 import { ChainsOptions } from './common';
 import { CHAINS_CONTEXT_LIST_METADATA, GLOBAL_CHAINS_CONTEXT_LIST_TARGET } from './constants';
@@ -19,7 +19,7 @@ export const { ConfigurableModuleClass, MODULE_OPTIONS_TOKEN } =
           ...(definition.providers || []),
           {
             provide: getGlobalChainListToken(),
-            useValue: new ChainList()
+            useValue: Object.seal(new ChainList()),
           },
           ChainsService,
           ...names.map((name) => ({

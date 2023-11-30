@@ -1,8 +1,7 @@
-import { Metadata } from "evm-chainlist";
+import { Chain, Metadata } from "evm-chainlist";
 
 export type ChainsOptions = {
-  data: Metadata[],
+  data: Metadata[] | Chain[],
+  lists?: Record<string, number[]>
   indexes?: string[],
-  groups?: Record<string, number[]>
-  builder?: <T>(metadatas: Metadata[], options: any) => T[]
 }

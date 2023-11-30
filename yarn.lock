@@ -94,9 +94,9 @@ diff@^4.0.1:
   integrity sha512-58lmxKSA4BNyLz+HHMUzlOEpg09FV+ev6ZMe3vJihgdxzgcwZ8VoEEPmALCZG9LmqfVoNMMKpttIYTVG6uDY7A==
 
 evm-chainlist@^1.0.0-beta:
-  version "1.0.0-beta.2"
-  resolved "https://registry.npmjs.org/evm-chainlist/-/evm-chainlist-1.0.0-beta.2.tgz#0795c4dad0c2f8085090d2eba3259f2bfff44540"
-  integrity sha512-tbIX5yE0jtLO3LainlanliCYb+Q8RMs0zdI/IjCzwHHwSYi5V5vzjBG+EaJqvjxem5wVl/CAdH1BVWEWGm1iUA==
+  version "1.0.0-beta.5"
+  resolved "https://registry.npmjs.org/evm-chainlist/-/evm-chainlist-1.0.0-beta.5.tgz#457ba2cb2728e907b0ae2090d49212d00432eac5"
+  integrity sha512-jdwQPdEIsqNA8QnhTlJD4CusqDxcSKnArMPrhKeUQzmgymmEFws8UuFOmIkQ/3yXR33FncSE5Ba5rliyN+TpLg==
   dependencies:
     lodash.get "^4.4.2"
 
