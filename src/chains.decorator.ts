@@ -20,7 +20,7 @@ export function getChainListToken(name) {
 
 
 /**
- * Generates a function comment for the given function body.
+ * Provide Chains decorator for injecting an object of ChainList
  *
  * @param {string} name - the name parameter.
  * @return {Function} - the generated function comment.

@@ -18,12 +18,15 @@ export const { ConfigurableModuleClass, MODULE_OPTIONS_TOKEN } =
 
         const providers: Provider[] = [
           ...(definition.providers || []),
+          
           {
             provide: getChainsStorageToken(),
             useValue: Object.seal(new Map()),
           },
+
           // init the chains service for manage all chains
           ChainsService,
+
           // init the chain list of decorator
           ...names.map((name) => ({
             provide: getChainListToken(name),
