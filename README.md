@@ -1,44 +1,43 @@
 # Chainlist
 
-`chainlist` for EVM-based Chains
+`chainlist` for easy manage and access to EVM-based Chains information
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/your-username/your-project/blob/master/LICENSE)
 
 ## Description
 
 the project is a library for interacting with metadata of the Chain. It provides a set of functions for reading metadata to the chain object, managing listings.
 
-when your project need maintain multiple chain codes on some chain, it can help your mapping your chain metadata.
+when your project need maintain multiple chain or access the metadata of chains, `chainlist` can help you.
+
+## Features
+
+- Manage multiple chains
+- Compatible fields
+- Flexible access
+- Extensible
 
 ## Installation
 
 ```bash
-npm i chainlist
+npm i evm-chainlist
 ```
 
 or
 
 ```bash
-yarn add chainlist
+yarn add evm-chainlist
 ```
 
 ## Usage
 
-Instantiate Chain and ChainList
+We have some metadata for chains. you can find them here [ethereum-lists/chains](https://github.com/ethereum-lists/chains/tree/master/_data/chains).
 
 ```typescript
-import { ChainList, buildChains } from 'chainlist';
-
-const data = [{
+const ethereumMetadata = {
   "name": "Ethereum Mainnet",
   "chain": "ETH",
   "icon": "ethereum",
-  "rpc": [
-    "https://mainnet.infura.io/v3/${INFURA_API_KEY}",
-    "wss://mainnet.infura.io/ws/v3/${INFURA_API_KEY}",
-    "https://api.mycryptoapi.com/eth"
-  ],
   "features": [{ "name": "EIP155" }, { "name": "EIP1559" }],
-  "faucets": [],
   "nativeCurrency": {
     "name": "Ether",
     "symbol": "ETH",
@@ -49,20 +48,28 @@ const data = [{
   "chainId": 1,
   "networkId": 1,
   "code": "ethereum"
-}, {
+};
+
+const rinkebyMetadata = {
+  "name": "Rinkeby",
+  "title": "Ethereum Testnet Rinkeby",
+  "chain": "ETH",
+  "nativeCurrency": {
+    "name": "Rinkeby Ether",
+    "symbol": "ETH",
+    "decimals": 18
+  },
+  "infoURL": "https://www.rinkeby.io",
+  "shortName": "rin",
+  "chainId": 4,
+  "networkId": 4,
+  "status": "inactive"
+};
+
+const goerliMetadata = {
   "name": "Goerli",
   "title": "Ethereum Testnet Goerli",
   "chain": "ETH",
-  "rpc": [
-    "https://goerli.infura.io/v3/${INFURA_API_KEY}",
-    "wss://goerli.infura.io/v3/${INFURA_API_KEY}",
-    "https://rpc.goerli.mudit.blog/"
-  ],
-  "faucets": [
-    "http://fauceth.komputing.org?chain=5&address=${ADDRESS}",
-    "https://goerli-faucet.slock.it?address=${ADDRESS}",
-    "https://faucet.goerli.mudit.blog"
-  ],
   "nativeCurrency": {
     "name": "Goerli Ether",
     "symbol": "ETH",
@@ -72,78 +79,127 @@ const data = [{
   "shortName": "gor",
   "chainId": 5,
   "networkId": 5,
-  "status": "active",
   "testnet": true,
-  "codes": {
+  "alias": {
     "internal": "goerli"
   }
+};
+```
+
+### Chain
+
+It's like access ordinary JSON objects, but it provide index and useful methods
+
+```typescript
+import { Chain } from 'evm-chainlist';
+
+// Get ethereum
+const ethereum = new Chain(ethereumMetadata);
+const rinkeby = new Chain(rinkebyMetadata);
+// Get goerli, and set indexes
+const goerli = new Chain(goerliMetadata, {indexes: ['alias.internal']});
+
+// Access metadata
+console.log(ethereum.get('nativeCurrency.name')); // Output: Ether
+console.log(ethereum.name); // Output: Ethereum Mainnet
+console.log(ethereum.infoURL); // Output: https://ethereum.org
+console.log(goerli.title); // Output: Ethereum Testnet Goerli
+
+// Default indexes: name, chainId, networkId
+console.log(goerli.equal('Ethereum Mainnet'); // Output: true
+console.log(ethereum.equal(1); // Output: true
+console.log(ethereum.equal('ethereum')); // Output: false
+
+// Specify indexes
+console.log(goerli.equal('goerli')); // Output: true
+console.log(goerli.indexes()); // Output: ['alias.internal']
+console.log(goerli.indexValues()); // Output: ['goerli']
+
+// Provide methods
+console.log(ethereum.isTestnet(), goerli.isTestnet()); // Output: false true
+console.log(rinkeby.supportFeature('EIP155')); // Output: false
+console.log(goerli.active(), rinkeby.inactive()); // Output: true true
+// ...
+```
+
+### ChainList
+
+Some businesses only support some chains
+
+```typescript
+import { ChainList } from 'evm-chainlist';
+
+// Instantiate by Chain or metadata
+const list = new ChainList([ethereumMetadata, rinkebyMetadata]);
+
+// Add Chain
+list.add(new Chain(goerliMetadata, {indexes: ['alias.internal']}));
+
+// Access chain by index value
+const ethereum = list.get(1);
+console.log(ethereum.name); // Output: Ethereum Mainnet
+
+const goerli = list.get('goerli');
+console.log(goerli.name); // Output: Goerli
+
+console.log(list.include(4)); // Output: true
+
+// Del chain by index value
+list.del('Rinkeby');
+
+// ...
+```
+
+### Chains
+
+Global access all chain and list
+
+```typescript
+import { Chains } from 'evm-chainlist';
+
+const data = [{
+  "name": "Ethereum Mainnet",
+  "chainId": 1
+}, {
+  "name": "OP Mainnet", 
+  "chainId": 10
+}, {
+  "name": "Binance Smart Chain",
+  "chainId": 56
+}, {
+  "name": "Kovan",
+  "chainId": 42
+}, {
+  "name": "Rinkeby",
+  "chainId": 4
 }];
 
-const chains = buildChains(data, {
-  // specify index properties
-  indexes: ['shortName', 'chain', 'codes.internal']
-});
-const list = new ChainList(chains);
+// Instantiate by Chain or metadata
+const chains = new Chains(data, {lists: {
+  'business1': [1, 56, 5],
+}});
 
-const ethereum = list.get(1);
+// Add Chain
+chains.addChain(new Chain({
+  "name": "Goerli",
+  "chainId": 5,
+  "alias": {
+    "internal": "goerli"
+  }
+}, {indexes: ['alias.internal']}));
+
+const rinkeby = chains.getChain(4);
+console.log(rinkeby.name); // Output: Rinkeby
+
+// Add ChainList
+chains.addChainList('test', ['goerli', 42]);
+
+// Access ChainList
+const testList = chains.getChainList('test');
+console.log(testList.include(5)); // Output: true
+
+// ...
 ```
-
-Get chain from ChainList
-
-```typescript
-// get ethereum
-const ethereum = list.get(1);
-
-console.log(ethereum.name); 
-// output: Ethereum Mainnet
-
-console.log(ethereum.isTestnet()); 
-// output: false
-```
-
-```typescript
-// get goerli
-const goerli = list.get(5);
-
-console.log(goerli.title); 
-// output: Ethereum Testnet Goerli
-
-console.log(goerli.isTestnet()); 
-// output: true
-```
-
-Indexes, default indexes: chainId, networkId
-
-```typescript
-// get goerli by index
-const goerli = list.get("goerli");
-
-// match index value
-console.log(goerli.is(5), goerli.is("ETH"), goerli.is("gor"), goerli.is("goerli")); 
-// output: true true true
-
-console.log(goerli.indexes()); 
-// output: ['shortName', 'chain', 'codes.internal']
-
-console.log(goerli.indexValues()); 
-// output: ['gor', 'ETH', 'goerli']
-```
-
-Mange ChainList
-
-```typescript
-const list = new ChainList();
-// add chain
-list.add(new Chain({chainId: 1, code: 'eth'}, {indexes: ['code']}));
-// get chain by code
-list.get('eth')
-// del chain by chainId
-list.del(1)
-```
-
-## Examples
-
-You can find more usage examples and code snippets in the examples directory.
 
 ## Contributing
 
