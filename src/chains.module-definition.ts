@@ -2,7 +2,7 @@ import { ConfigurableModuleBuilder, Provider } from '@nestjs/common';
 import { ChainsService } from './';
 import { getChainListToken, getChainsStorageToken } from "./chains.decorator";
 import { ChainsOptions } from './common';
-import { CHAINS_CONTEXT_LIST_METADATA, GLOBAL_CHAINS_CONTEXT_LIST_TARGET } from './constants';
+import { METADATA_CHAINS_LIST, TARGET_CHAINS_LISTS } from './constants';
 
 export const { ConfigurableModuleClass, MODULE_OPTIONS_TOKEN } =
   new ConfigurableModuleBuilder<ChainsOptions>()
@@ -10,11 +10,10 @@ export const { ConfigurableModuleClass, MODULE_OPTIONS_TOKEN } =
       { isGlobal: true },
       (definition, extras) => {
         
-        const names =
-        Reflect.getMetadata(
-          CHAINS_CONTEXT_LIST_METADATA,
-          GLOBAL_CHAINS_CONTEXT_LIST_TARGET,
-        ) || [];
+        const list = Reflect.getMetadata(
+            METADATA_CHAINS_LIST,
+            TARGET_CHAINS_LISTS,
+          ) || [];
 
         const providers: Provider[] = [
           ...(definition.providers || []),
@@ -28,9 +27,11 @@ export const { ConfigurableModuleClass, MODULE_OPTIONS_TOKEN } =
           ChainsService,
 
           // init the chain list of decorator
-          ...names.map((name) => ({
-            provide: getChainListToken(name),
-            useFactory: (service: ChainsService) => service.getChainList(name),
+          ...list.map((option) => ({
+            provide: getChainListToken(option.name),
+            useFactory: (service: ChainsService) => option.customized 
+              ? service.createChainList(option.values)
+              : service.getChainList(option.customized),
             inject: [ChainsService],
           })),
         ];

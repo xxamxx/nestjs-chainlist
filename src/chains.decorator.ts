@@ -1,8 +1,10 @@
 import { Inject } from '@nestjs/common';
+import { ChainValue } from 'evm-chainlist';
 import {
-  CHAINS_CONTEXT_LIST_METADATA,
-  GLOBAL_CHAINS_CONTEXT_LIST_TARGET
+  METADATA_CHAINS_LIST,
+  TARGET_CHAINS_LISTS
 } from './constants';
+import { generateInjectChainListToken } from './util';
 
 export function getChainsStorageToken() {
   return 'chains:storage';
@@ -22,22 +24,35 @@ export function getChainListToken(name) {
 /**
  * Provide Chains decorator for injecting an object of ChainList
  *
- * @param {string} name - the name parameter.
+ * @param {string} nameOrValues - the name parameter.
  * @return {Function} - the generated function comment.
  */
-export function Chains(name) {
+export function Chains(name: string);
+export function Chains(values: ChainValue[]);
+export function Chains(nameOrValues: string | ChainValue[]) {
+  const name = Array.isArray(nameOrValues) ? generateInjectChainListToken(nameOrValues) : nameOrValues;
+  
   return (target: object, key: string | symbol, index?: number) => {
+    
     Inject(getChainListToken(name))(target, key, index);
+    // init the list of name
     const list =
       Reflect.getMetadata(
-        CHAINS_CONTEXT_LIST_METADATA,
-        GLOBAL_CHAINS_CONTEXT_LIST_TARGET,
+        METADATA_CHAINS_LIST,
+        TARGET_CHAINS_LISTS,
       ) || [];
-    list.push(name);
+
+    list.push({
+      name,
+      customized: Array.isArray(nameOrValues),
+      values: Array.isArray(nameOrValues) ? nameOrValues : [],
+    });
+
+    // save the list of name
     Reflect.defineMetadata(
-      CHAINS_CONTEXT_LIST_METADATA,
+      METADATA_CHAINS_LIST,
       list,
-      GLOBAL_CHAINS_CONTEXT_LIST_TARGET,
+      TARGET_CHAINS_LISTS,
     );
   };
 }

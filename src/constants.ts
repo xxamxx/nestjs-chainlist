@@ -1,4 +1,4 @@
-export const CHAINS_CONTEXT_LIST_METADATA = 'chains:name:list';
+export const METADATA_CHAINS_LIST = 'chains:name:list';
 
-export const GLOBAL_CHAINS_CONTEXT_LIST_TARGET = Object.seal({});
+export const TARGET_CHAINS_LISTS = Object.seal({});
 
