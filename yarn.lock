@@ -1111,9 +1111,9 @@ esprima@^4.0.0:
   integrity sha512-eGuFFw7Upda+g4p+QHvnW0RyTX/SVeJBDM/gCtMARO0cLuT2HcEKnTPvhjV6aGeqrCB/sbNop0Kszm0jsaWU4A==
 
 evm-chainlist@^1.0.0-beta:
-  version "1.0.0-beta.12"
-  resolved "https://registry.npmjs.org/evm-chainlist/-/evm-chainlist-1.0.0-beta.12.tgz#96ee730f9e3b7edf2d09c544890870b168891e90"
-  integrity sha512-dE8rNCEVS724/beB/6aVaI8RbYe+hcqU8AhcEXh5h5R9l1X956cKEaZ6pCjj4CTWz5+PrUWStpRkN9/+fFRdfg==
+  version "1.0.0-beta.29"
+  resolved "https://registry.npmjs.org/evm-chainlist/-/evm-chainlist-1.0.0-beta.29.tgz#5b1c67d6b71802b62ab9484e0c640cd987938456"
+  integrity sha512-2JbgVfkAN3h1Y67S16UCRL6E++IS9wqENOfixp33gFG7mL5cuNnd5Pv90bzruOAHUBQzDr1QqsHpFLXCHyvv0w==
   dependencies:
     lodash.get "^4.4.2"
 
