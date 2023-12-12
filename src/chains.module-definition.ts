@@ -1,11 +1,13 @@
 import { ConfigurableModuleBuilder, Provider } from '@nestjs/common';
 import { ChainsService } from './';
-import { getChainListToken, getChainsStorageToken } from "./chains.decorator";
 import { ChainsOptions } from './common';
 import { METADATA_CHAINS_LIST, TARGET_CHAINS_LISTS } from './constants';
+import { getChainListToken, getChainsOptionsToken, getChainsStorageToken } from "./tokens";
 
 export const { ConfigurableModuleClass, MODULE_OPTIONS_TOKEN } =
-  new ConfigurableModuleBuilder<ChainsOptions>()
+  new ConfigurableModuleBuilder<ChainsOptions>({
+    optionsInjectionToken: getChainsOptionsToken(),
+  })
     .setExtras<{ isGlobal?: boolean } & any>(
       { isGlobal: true },
       (definition, extras) => {
