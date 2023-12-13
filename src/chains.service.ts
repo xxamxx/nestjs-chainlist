@@ -1,15 +1,13 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Optional } from '@nestjs/common';
 import { Chain, Chains } from 'evm-chainlist';
-import { MODULE_OPTIONS_TOKEN } from './chains.module-definition';
 import { ChainsOptions } from './common';
-import { getChainsStorageToken } from './tokens';
+import { getChainsOptionsToken, getChainsStorageToken } from './tokens';
 
 @Injectable()
 export class ChainsService<T extends Chain = Chain> extends Chains<T> {
-  
   constructor(
-    @Inject(getChainsStorageToken()) storage?: Map<string, T>,
-    @Inject(MODULE_OPTIONS_TOKEN) options: ChainsOptions = {data: []},
+    @Optional() @Inject(getChainsStorageToken()) storage?: Map<string, T>,
+    @Optional() @Inject(getChainsOptionsToken()) options: ChainsOptions = {data: []},
   ) {
     const {data, ...opts} = options;
 

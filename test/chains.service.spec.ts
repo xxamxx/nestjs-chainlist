@@ -9,7 +9,7 @@ describe('ChainsService', () => {
   });
 
   describe('getChain', () => {
-    it('should return a chain', async () => {
+    test('should return a chain', async () => {
       const chain = new Chain({
         name: 'Test Chain',
         chainId: 0,
