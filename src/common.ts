@@ -16,7 +16,7 @@ export type ChainsOptions = {
  * - validate: Specifies whether to validate the chain decorator options, defaults to `true`.
  * - pipes: Specifies an array of pipe transforms to apply to the chain decorator options, defaults to `[]`.
  */
-export type ChainDecoratorOptions = {
+export type ChainParamDecoratorOptions = {
   param: string;
   paramtype?: 'params' | 'body' | 'query' | 'headers' | string;
   supportChainList?: string;

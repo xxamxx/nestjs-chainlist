@@ -2,14 +2,14 @@
 import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 import { Chain } from 'evm-chainlist';
 import { ChainsService } from './chains.service';
-import { ChainDecoratorOptions } from './common';
+import { ChainParamDecoratorOptions } from './common';
 
 @Injectable()
 export class ChainsPipe<T = any | any[], R extends Chain = Chain> implements PipeTransform<T, T extends Array<any> ? Array<R> : R> {
   private readonly chainsService: ChainsService;
 
   transform<T = any | any[], R extends Chain = Chain>(value: T, metadata: ArgumentMetadata): T extends Array<any> ? Array<R> : R {
-    const options = metadata.data as unknown as ChainDecoratorOptions;
+    const options = metadata.data as unknown as ChainParamDecoratorOptions;
     let list = this.chainsService.createChainList(options.supportChains || []);
     if (options.supportChainList) {
       const _list = this.chainsService.getChainList(options.supportChainList);
