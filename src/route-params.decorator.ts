@@ -1,7 +1,7 @@
 import { ExecutionContext } from '@nestjs/common';
 import { ROUTE_ARGS_METADATA } from '@nestjs/common/constants';
 import { ChainValue } from 'evm-chainlist';
-import { get } from "lodash.get";
+import get from "lodash.get";
 import { ChainsPipe } from './chains.pipe';
 import { ChainParamDecoratorOptions } from './common';
 import { assignCustomParameterMetadata, isNil } from './util';
@@ -91,19 +91,20 @@ export function ChainParam(paramOrOptions, listOrValuesOrOptions?, options?) {
   }
 
   const pipes = [ChainsPipe, ...(options.pipes || [])];
-  const factory = (_options: ChainParamDecoratorOptions, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest();
-    if (_options.paramtype) return get(get(request, _options.paramtype), _options.param);
-    // handle default paramtype
-    if (request.method === 'GET') return get(request.query, _options.param);
-    else return get(request.body, _options.param);
-  }
-
+  
   return (target: object, key: string | symbol, index?: number) => {
+    const factory = function (_options: ChainParamDecoratorOptions, ctx: ExecutionContext) {
+      const request = ctx.switchToHttp().getRequest();
+      if (_options.paramtype) return get(get(request, _options.paramtype), _options.param);
+      // handle default paramtype
+      if (request.method === 'GET') return get(request.query, _options.param);
+      else return get(request.body, _options.param);
+    }
+
     const args = Reflect.getMetadata(ROUTE_ARGS_METADATA, target.constructor, key) || {};
     Reflect.defineMetadata(
       ROUTE_ARGS_METADATA, 
-      assignCustomParameterMetadata(args, options.paramtype, index, factory, options, pipes), 
+      assignCustomParameterMetadata(args, options.paramtype, index, factory, options, ...pipes), 
       target.constructor, 
       key
     );

@@ -1,16 +1,23 @@
 
-import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
+import { ArgumentMetadata, BadRequestException, Inject, Injectable, PipeTransform } from '@nestjs/common';
 import { Chain } from 'evm-chainlist';
 import { ChainsService } from './chains.service';
 import { ChainParamDecoratorOptions } from './common';
 
 @Injectable()
 export class ChainsPipe<T = any | any[], R extends Chain = Chain> implements PipeTransform<T, T extends Array<any> ? Array<R> : R> {
+  @Inject()
   private readonly chainsService: ChainsService;
+
+  private toChainValue(val) {
+    return isNaN(+val) ? val : +val
+  }
 
   transform<T = any | any[], R extends Chain = Chain>(value: T, metadata: ArgumentMetadata): T extends Array<any> ? Array<R> : R {
     const options = metadata.data as unknown as ChainParamDecoratorOptions;
-    let list = this.chainsService.createChainList(options.supportChains || []);
+    const supportChains = options.supportChains || this.chainsService.getGlobalChainList().getChainIds();
+
+    const list = this.chainsService.createChainList(supportChains);
     if (options.supportChainList) {
       const _list = this.chainsService.getChainList(options.supportChainList);
       _list.forEach((chain) => list.add(chain));
@@ -21,7 +28,7 @@ export class ChainsPipe<T = any | any[], R extends Chain = Chain> implements Pip
     }
 
     if (Array.isArray(value)) {
-      const invalidValues = value.filter((val) => !list.include(val));
+      const invalidValues = value.filter((val) => !list.include(this.toChainValue(val)));
       if (invalidValues.length > 0) {
         throw new BadRequestException(`Invalid chain values: ${invalidValues.join(', ')}`);
       }
@@ -29,7 +36,7 @@ export class ChainsPipe<T = any | any[], R extends Chain = Chain> implements Pip
       return value.map(val => this.chainsService.getChain(val)) as any;
     }
     else {
-      if (!list.include(value as any)) {
+      if (!list.include(this.toChainValue(value))) {
         throw new BadRequestException(`Invalid chain value: ${value}`);
       }
 
