@@ -35,7 +35,7 @@ function createOptions(
   else if (typeof(listOrValuesOrOptions) === 'string') {
     _options.supportChainList = listOrValuesOrOptions;
   }
-  
+
   return _options as ChainParamDecoratorOptions;
 }
 
@@ -104,7 +104,7 @@ export function ChainParam(paramOrOptions, listOrValuesOrOptions?, options?) {
     const args = Reflect.getMetadata(ROUTE_ARGS_METADATA, target.constructor, key) || {};
     Reflect.defineMetadata(
       ROUTE_ARGS_METADATA, 
-      assignCustomParameterMetadata(args, options.paramtype, index, factory, options, ...pipes), 
+      assignCustomParameterMetadata(args, options.paramtype, index, factory, options, pipes), 
       target.constructor, 
       key
     );

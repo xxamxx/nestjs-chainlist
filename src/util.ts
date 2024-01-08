@@ -19,7 +19,7 @@ export function isNil(value) {
   return typeof(value) === 'undefined' || value === null;
 }
 
-export function assignCustomParameterMetadata(args, paramtype, index, factory, data, ...pipes) {
+export function assignCustomParameterMetadata(args, paramtype, index, factory, data, pipes) {
   return Object.assign(Object.assign({}, args), { [`${paramtype}${CUSTOM_ROUTE_ARGS_METADATA}:${index}`]: {
           index,
           factory,
