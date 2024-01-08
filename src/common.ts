@@ -13,7 +13,7 @@ export type ChainsOptions = {
  * - supportChainList: Specifies a list of supported chain names, defaults to undefined.
  * - supportChains: Specifies a list of supported chain values, defaults to `[]`.
  * - unsupportChains: Specifies a list of unsupported chain values, defaults to `[]`.
- * - validate: Specifies whether to validate the chain decorator options, defaults to `true`.
+ * - required: Specifies whether to required the chain decorator options, defaults to `true`.
  * - pipes: Specifies an array of pipe transforms to apply to the chain decorator options, defaults to `[]`.
  */
 export type ChainParamDecoratorOptions = {
@@ -22,6 +22,6 @@ export type ChainParamDecoratorOptions = {
   supportChainList?: string;
   supportChains?: ChainValue[];
   unsupportChains?: ChainValue[];
-  validate?: boolean;
+  required?: boolean;
   pipes?: PipeTransform[];
 }

@@ -27,17 +27,22 @@ export class ChainsPipe<T = any | any[], R extends Chain = Chain> implements Pip
       options.unsupportChains.forEach((chain) => list.del(chain));
     }
 
+    const required = options.required || true;
     if (Array.isArray(value)) {
-      const invalidValues = value.filter((val) => !list.include(this.toChainValue(val)));
-      if (invalidValues.length > 0) {
-        throw new BadRequestException(`Invalid chain values: ${invalidValues.join(', ')}`);
+      if (required) {
+        const invalidValues = value.filter((val) => !list.include(this.toChainValue(val)));
+        if (invalidValues.length > 0) {
+          throw new BadRequestException(`Invalid chain values: ${invalidValues.join(', ')}`);
+        }
       }
 
       return value.map(val => this.chainsService.getChain(val)) as any;
     }
     else {
-      if (!list.include(this.toChainValue(value))) {
-        throw new BadRequestException(`Invalid chain value: ${value}`);
+      if (required) {
+        if (!list.include(this.toChainValue(value))) {
+          throw new BadRequestException(`Invalid chain value: ${value}`);
+        }
       }
 
       return this.chainsService.getChain(value) as any;
