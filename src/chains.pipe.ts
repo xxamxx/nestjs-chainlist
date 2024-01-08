@@ -15,7 +15,7 @@ export class ChainsPipe<T = any | any[], R extends Chain = Chain> implements Pip
 
   transform<T = any | any[], R extends Chain = Chain>(value: T, metadata: ArgumentMetadata): T extends Array<any> ? Array<R> : R {
     const options = metadata.data as unknown as ChainParamDecoratorOptions;
-    const supportChains = options.supportChains || this.chainsService.getGlobalChainList().getChainIds();
+    const supportChains = options.supportChains || this.chainsService.globalChainList.getChainIds();
 
     const list = this.chainsService.createChainList(supportChains);
     if (options.supportChainList) {
